@@ -7,4 +7,6 @@ export class CreateAdminDto {
   addres: string;
   gender: string;
   is_active: boolean;
+  password: string;
+  confirm_password: string;
 }
