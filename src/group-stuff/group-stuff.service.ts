@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateGroupStuffDto } from './dto/create-group-stuff.dto';
 import { UpdateGroupStuffDto } from './dto/update-group-stuff.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,6 +30,10 @@ export class GroupStuffService {
   }
 
   async remove(id: number) {
+    const groupStuff = await this.groupStuffRepo.findOneBy({ id });
+    if (!groupStuff) {
+      throw new BadRequestException('Bunday id lik groupStuff mavjud emas');
+    }
     await this.groupStuffRepo.delete({ id });
     return id;
   }

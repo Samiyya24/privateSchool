@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateSchoolDto } from './dto/create-school.dto';
 import { UpdateSchoolDto } from './dto/update-school.dto';
 import { School } from './entities/school.entity';
@@ -27,6 +27,10 @@ export class SchoolService {
   }
 
   async remove(id: number) {
+      const school = await this.schoolRepo.findOneBy({ id });
+      if (!school) {
+        throw new BadRequestException('Bunday id lik school mavjud emas');
+      }
     await this.schoolRepo.delete({ id });
     return id;
   }

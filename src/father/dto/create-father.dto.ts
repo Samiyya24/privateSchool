@@ -1,7 +1,16 @@
+
+
+import { IsNumber, IsString } from "class-validator";
+
 export class CreateFatherDto {
-    first_name:string
-    last_name:string
-    phone_number:number
-    profession:string
-    pasport_copy:string
+  @IsString()
+  first_name: string;
+  @IsNumber()
+  last_name: string;
+  @IsString()
+  phone_number: number;
+  @IsString()
+  profession: string;
+  @IsString()
+  pasport_copy: string;
 }

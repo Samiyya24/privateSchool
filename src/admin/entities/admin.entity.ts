@@ -60,15 +60,15 @@ export class Admin {
     example: false,
     description: 'Checked user is activated',
   })
-  @Column()
+  @Column({ nullable: true })
   is_active: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   hashed_refresh_token: string;
 
-  @Column()
+  @Column({ nullable: true })
   hashed_password: string;
-  
-  @Column()
+
+  @Column({ nullable: true })
   activation_link: string;
 }

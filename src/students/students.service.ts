@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,6 +30,10 @@ export class StudentsService {
   }
 
   async remove(id: number) {
+      const student = await this.studentRepo.findOneBy({ id });
+      if (!student) {
+        throw new BadRequestException('Bunday id lik student mavjud emas');
+      }
     await this.studentRepo.delete({ id });
     return id;
   }

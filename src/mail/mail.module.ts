@@ -19,7 +19,7 @@ import { MailService } from './mail.service';
           },
         },
         defaults: {
-          from: `"Hospital" <${config.get('MAILER_HOST')}>`,
+          from: `"Private School" <${config.get('MAILER_HOST')}>`,
         },
         template: {
           dir: join(__dirname, 'templates'),

@@ -30,4 +30,6 @@ export class CreateAdminDto {
 
   @IsString()
   confirm_password: string;
+
+  
 }

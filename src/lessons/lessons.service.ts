@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,6 +30,10 @@ export class LessonsService {
   }
 
   async remove(id: number) {
+    const lesson = await this.lessonRepo.findOneBy({ id });
+    if (!lesson) {
+      throw new BadRequestException('Bunday id lik lesson mavjud emas');
+    }
     await this.lessonRepo.delete({ id });
     return id;
   }

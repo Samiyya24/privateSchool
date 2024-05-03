@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 
 @ApiHeader({
@@ -14,21 +14,25 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
+  @ApiOperation({ summary: 'Create department' })
   @Post()
   create(@Body() createDepartmentDto: CreateDepartmentDto) {
     return this.departmentService.create(createDepartmentDto);
   }
 
+  @ApiOperation({ summary: 'Get all departments' })
   @Get()
   findAll() {
     return this.departmentService.findAll();
   }
 
+  @ApiOperation({ summary: 'Get department by id' })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.departmentService.findOne(+id);
   }
 
+  @ApiOperation({ summary: 'Update department by id' })
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -37,6 +41,7 @@ export class DepartmentController {
     return this.departmentService.update(+id, updateDepartmentDto);
   }
 
+  @ApiOperation({ summary: 'Delete department by id' })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.departmentService.remove(+id);

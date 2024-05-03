@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,6 +30,10 @@ export class RoleService {
   }
 
   async remove(id: number) {
+      const role = await this.roleRepo.findOneBy({ id });
+      if (!role) {
+        throw new BadRequestException('Bunday id lik role mavjud emas');
+      }
     await this.roleRepo.delete({ id });
     return id;
   }

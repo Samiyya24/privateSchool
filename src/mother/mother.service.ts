@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateMotherDto } from './dto/create-mother.dto';
 import { UpdateMotherDto } from './dto/update-mother.dto';
 import { Mother } from './entities/mother.entity';
@@ -30,6 +30,10 @@ export class MotherService {
   }
 
   async remove(id: number) {
+    const mother = await this.motherRepo.findOneBy({ id });
+    if (!mother) {
+      throw new BadRequestException('Bunday id lik mother mavjud emas');
+    }
     await this.motherRepo.delete({ id });
     return id;
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,6 +30,10 @@ export class PaymentService {
   }
 
   async remove(id: number) {
+    const payment = await this.paymentRepo.findOneBy({ id });
+    if (!payment) {
+      throw new BadRequestException('Bunday id lik payment mavjud emas');
+    }
     await this.paymentRepo.delete({ id });
     return id;
   }

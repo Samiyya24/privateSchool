@@ -6,11 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
+  HttpCode,
+  BadRequestException,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { LoginAdminDto } from './dto/login-admin.dto';
+import { CookieGetter } from '../decorators/cookie_getter.decorator';
 
 @ApiHeader({
   name: 'Admin',
@@ -21,34 +27,60 @@ import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Post()
-  create(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.create(createAdminDto);
+  // --------------- SIGNUP ------------------------------------------
+  @ApiOperation({ summary: 'SignUp' })
+  @Post('signUp')
+  registration(
+    @Body() createAdminDto: CreateAdminDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminService.signUp(createAdminDto, res);
+  }
+  // --------------- SIGNIN ------------------------------------------
+  @ApiOperation({ summary: 'SignIn' })
+  @HttpCode(200)
+  @Post('signIn')
+  async signIn(
+    @Body() loginAdminDto: LoginAdminDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminService.signIn(loginAdminDto, res);
   }
 
-  // @ApiResponse({
-  //   status: 201,
-  //   description: 'The record has been successfully created.',
-  // })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  // --------------LOGOUT-----------------------
+  // @ApiOperation({ summary: 'LogOut' })
+  // // @ApiTags('LOGOUT')
+  // @HttpCode(200)
+  // @Post('logout')
+  // async logout(
+  //   @CookieGetter('refresh_token') refreshToken: string,
+  //   @Res({ passthrough: true }) res: Response,
+  // ) {
+  //   return this.adminService.logout(refreshToken, res);
+  // }
+
+  @ApiOperation({ summary: 'Get all admins' })
   @Get()
   findAll() {
     return this.adminService.findAll();
   }
 
   // @ApiTags('FIND ONE')
+  @ApiOperation({ summary: 'Get admin by id' })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.adminService.findOne(+id);
   }
 
   // @ApiTags('UPDATE')
+  @ApiOperation({ summary: 'Update admin by id' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
     return this.adminService.update(+id, updateAdminDto);
   }
 
   // @ApiTags('DELETE')
+  @ApiOperation({ summary: 'Delete admin by id' })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.adminService.remove(+id);

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateFurnitureDto } from './dto/create-furniture.dto';
 import { UpdateFurnitureDto } from './dto/update-furniture.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,6 +30,10 @@ export class FurnitureService {
   }
 
   async remove(id: number) {
+    const furniture = await this.furnitureRepo.findOneBy({ id });
+    if (!furniture) {
+      throw new BadRequestException('Bunday id lik furniture mavjud emas');
+    }
     await this.furnitureRepo.delete({ id });
     return id;
   }

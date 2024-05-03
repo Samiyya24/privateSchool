@@ -1,4 +1,8 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { v4 } from 'uuid';
 import { Response } from 'express';
 import { LoginAdminDto } from './dto/login-admin.dto';
-import { MailService } from '../../mail/mail.service';
+import { MailService } from '../mail/mail.service';
 
 console.log(v4);
 
@@ -43,9 +47,9 @@ export class AdminService {
     };
   }
 
-  // =========== REGISTRATION ===============================
+  // =========== SIGN UP ===============================
 
-  async registration(createAdminDto: CreateAdminDto, res: Response) {
+  async signUp(createAdminDto: CreateAdminDto, res: Response) {
     const admin = await this.adminRepo.findOne({
       where: { email: createAdminDto.email },
     });
@@ -56,28 +60,27 @@ export class AdminService {
       throw new BadRequestException('Parollar mos emas');
     }
     const hashed_password = await bcrypt.hash(createAdminDto.password, 7);
-    const newAdmin = await this.adminRepo.create({
+    const newAdmin = await this.adminRepo.save({
       ...createAdminDto,
       hashed_password,
     });
     const tokens = await this.getTokens(newAdmin);
     const hashed_refresh_token = await bcrypt.hash(tokens.refreshToken, 7);
     const activation_link = v4();
-    const updatedAdmin = await this.adminRepo.update(
-      { id: newAdmin.id },
-      { hashed_refresh_token },
-      // { hashed_refresh_token, activation_link },
-      // {
-      //   where: { id: newAdmin.id },
-      //   returning: true,
-      // },
-    );
+    const updatedAdmin = await this.adminRepo.save({
+      id: newAdmin.id,
+      hashed_refresh_token,
+    });
+    console.log(updatedAdmin);
+
     res.cookie('refresh_token', tokens.refreshToken, {
       maxAge: 15 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
 
-    const updateAdmin = updatedAdmin[1][0];
+    const updateAdmin = updatedAdmin;
+
+    console.log(updatedAdmin);
 
     try {
       await this.mailService.sendMail(updateAdmin);
@@ -92,36 +95,55 @@ export class AdminService {
     return response;
   }
 
-  // =========== LOGIN ===============================
+  // =========== ACTIVATE ===============================
 
-  async login(loginAdminDto: LoginAdminDto, res: Response) {
+  async activate(link: string) {
+    if (!link) {
+      throw new BadRequestException('Activation link not found');
+    }
+    const updatedAdmin = await this.adminRepo.update(
+      { is_active: true },
+      { activation_link: link },
+      // { is_active: false },
+    );
+    if (!updatedAdmin[1][0]) {
+      throw new BadRequestException('Admin already activated');
+    }
+    const response = {
+      message: 'Admin activated successfully',
+      admin: updatedAdmin[1][0].is_active,
+    };
+    return response;
+  }
+
+  // =========== 'SIGNIN' ===============================
+  async signIn(loginAdminDto: LoginAdminDto, res: Response) {
     const { email, password } = loginAdminDto;
-    const admin = await this.adminRepo.findOneBy({ email });
+    const admin = await this.adminRepo.findOne({ where: { email } });
     if (!admin) {
       throw new BadRequestException('Admin not found');
     }
     if (!admin.is_active) {
-      throw new BadRequestException('Admin is not active');
+      throw new BadRequestException('Admin  is not activate');
     }
     const isMatchPass = await bcrypt.compare(password, admin.hashed_password);
     if (!isMatchPass) {
-      throw new BadRequestException('Password does not match');
+      throw new BadRequestException('Password do not match');
     }
 
     const tokens = await this.getTokens(admin);
     const hashed_refresh_token = await bcrypt.hash(tokens.refreshToken, 7);
-    const updatedAdmin = await this.adminRepo.update(admin.id, {
+    const updatedAdmin = await this.adminRepo.save({
+      id: admin.id,
       hashed_refresh_token,
     });
-
     res.cookie('refresh_token', tokens.refreshToken, {
       maxAge: 15 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
-
     const response = {
       message: 'Admin logged in',
-      admin: updatedAdmin.raw[0],
+      admin: updatedAdmin[1][0],
       tokens,
     };
     return response;
@@ -139,11 +161,6 @@ export class AdminService {
     const updatedAdmin = await this.adminRepo.update(
       { id: adminDate.id },
       { hashed_password: null },
-      // { hashed_refresh_token: null },
-      // {
-      //   where: { id: adminDate.id },
-      //   returning: true,
-      // },
     );
     res.clearCookie('refresh_token');
     const response = {
@@ -183,14 +200,10 @@ export class AdminService {
     });
     const response = {
       message: 'Admin refreshed ',
-      admin: updatedAdmin[1][0],
+      admin: updatedAdmin,
       tokens,
     };
     return response;
-  }
-
-  create(createAdminDto: CreateAdminDto) {
-    return this.adminRepo.save(createAdminDto);
   }
 
   findAll() {
@@ -207,7 +220,11 @@ export class AdminService {
   }
 
   async remove(id: number) {
+    const admin = await this.adminRepo.findOneBy({ id });
+    if (!admin) {
+      throw new BadRequestException('Bunday id lik admin mavjud emas');
+    }
     await this.adminRepo.delete({ id });
-    return id;
+    return `ID: ${id} bo'lgan admin o'chirildi `;
   }
 }

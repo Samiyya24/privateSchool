@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,6 +30,10 @@ export class DepartmentService {
   }
 
   async remove(id: number) {
+    const department = await this.departmentRepo.findOneBy({ id });
+    if (!department) {
+      throw new BadRequestException('Bunday id lik department mavjud emas');
+    }
     await this.departmentRepo.delete({ id });
     return id;
   }

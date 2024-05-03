@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateFatherDto } from './dto/create-father.dto';
 import { UpdateFatherDto } from './dto/update-father.dto';
 import { Father } from './entities/father.entity';
@@ -30,6 +30,10 @@ export class FatherService {
   }
 
   async remove(id: number) {
+    const father = await this.fatherRepo.findOneBy({ id });
+    if (!father) {
+      throw new BadRequestException('Bunday id lik father mavjud emas');
+    }
     await this.fatherRepo.delete({ id });
     return id;
   }
