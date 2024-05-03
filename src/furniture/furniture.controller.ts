@@ -2,7 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { FurnitureService } from './furniture.service';
 import { CreateFurnitureDto } from './dto/create-furniture.dto';
 import { UpdateFurnitureDto } from './dto/update-furniture.dto';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
+
+@ApiHeader({
+  name: 'Furniture',
+  description: '',
+})
+@ApiTags('Furniture')
 @Controller('furniture')
 export class FurnitureController {
   constructor(private readonly furnitureService: FurnitureService) {}
@@ -23,7 +30,10 @@ export class FurnitureController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFurnitureDto: UpdateFurnitureDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateFurnitureDto: UpdateFurnitureDto,
+  ) {
     return this.furnitureService.update(+id, updateFurnitureDto);
   }
 

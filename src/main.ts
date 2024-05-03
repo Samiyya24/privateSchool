@@ -12,10 +12,10 @@ const start = async () => {
 
   // ===================== SWAGGER ==========
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Private School')
+    .setDescription('The private school API description')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('NESTJS, VALIDATION, SWAGGER, TYPEORM')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

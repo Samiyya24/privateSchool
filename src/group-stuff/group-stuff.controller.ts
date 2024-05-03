@@ -2,7 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { GroupStuffService } from './group-stuff.service';
 import { CreateGroupStuffDto } from './dto/create-group-stuff.dto';
 import { UpdateGroupStuffDto } from './dto/update-group-stuff.dto';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
+@ApiHeader({
+  name: 'Group-stuff',
+  description: '',
+})
+@ApiTags('Group-stuff')
 @Controller('group-stuff')
 export class GroupStuffController {
   constructor(private readonly groupStuffService: GroupStuffService) {}
@@ -23,7 +29,10 @@ export class GroupStuffController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGroupStuffDto: UpdateGroupStuffDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateGroupStuffDto: UpdateGroupStuffDto,
+  ) {
     return this.groupStuffService.update(+id, updateGroupStuffDto);
   }
 

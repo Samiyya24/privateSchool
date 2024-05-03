@@ -2,7 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { MotherService } from './mother.service';
 import { CreateMotherDto } from './dto/create-mother.dto';
 import { UpdateMotherDto } from './dto/update-mother.dto';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
+
+@ApiHeader({
+  name: 'Mother',
+  description: '',
+})
+@ApiTags('Mother')
 @Controller('mother')
 export class MotherController {
   constructor(private readonly motherService: MotherService) {}

@@ -2,7 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { StuffRoleService } from './stuff-role.service';
 import { CreateStuffRoleDto } from './dto/create-stuff-role.dto';
 import { UpdateStuffRoleDto } from './dto/update-stuff-role.dto';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
+
+@ApiHeader({
+  name: 'Stuff-role',
+  description: '',
+})
+@ApiTags('Stuff-role')
 @Controller('stuff-role')
 export class StuffRoleController {
   constructor(private readonly stuffRoleService: StuffRoleService) {}
@@ -23,7 +30,10 @@ export class StuffRoleController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStuffRoleDto: UpdateStuffRoleDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateStuffRoleDto: UpdateStuffRoleDto,
+  ) {
     return this.stuffRoleService.update(+id, updateStuffRoleDto);
   }
 

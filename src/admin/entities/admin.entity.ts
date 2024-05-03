@@ -58,8 +58,17 @@ export class Admin {
 
   @ApiProperty({
     example: false,
-    description: "Checked user is activated",
+    description: 'Checked user is activated',
   })
   @Column()
   is_active: boolean;
+
+  @Column()
+  hashed_refresh_token: string;
+
+  @Column()
+  hashed_password: string;
+  
+  @Column()
+  activation_link: string;
 }

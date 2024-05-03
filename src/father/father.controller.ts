@@ -10,7 +10,14 @@ import {
 import { FatherService } from './father.service';
 import { CreateFatherDto } from './dto/create-father.dto';
 import { UpdateFatherDto } from './dto/update-father.dto';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
+
+@ApiHeader({
+  name: 'Father',
+  description: '',
+})
+@ApiTags('Father')
 @Controller('father')
 export class FatherController {
   constructor(private readonly fatherService: FatherService) {}
