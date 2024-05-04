@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
@@ -14,6 +15,13 @@ import { v4 } from 'uuid';
 import { Response } from 'express';
 import { LoginAdminDto } from './dto/login-admin.dto';
 import { MailService } from '../mail/mail.service';
+import { SmsService } from '../sms/sms.service';
+import { PhoneAdminDto } from './dto/phone-user.dto';
+import * as otpGenerator from 'otp-generator';
+import { Otp } from '../otp/entities/otp.entity';
+import { AddMinutesToDate } from '../helpers/addMinutes';
+import { encode } from '../helpers/crypto';
+
 
 console.log(v4);
 
@@ -21,8 +29,11 @@ console.log(v4);
 export class AdminService {
   constructor(
     @InjectRepository(Admin) private adminRepo: Repository<Admin>,
+    @InjectRepository(Otp) private readonly otpRepo: Repository<Otp>,
+
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly smsService: SmsService,
   ) {}
 
   // =========== GET TOKEN ===============================
@@ -67,9 +78,13 @@ export class AdminService {
     const tokens = await this.getTokens(newAdmin);
     const hashed_refresh_token = await bcrypt.hash(tokens.refreshToken, 7);
     const activation_link = v4();
+    const is_active = await newAdmin.is_active;
     const updatedAdmin = await this.adminRepo.save({
       id: newAdmin.id,
       hashed_refresh_token,
+      activation_link,
+      hashed_password,
+      is_active,
     });
     console.log(updatedAdmin);
 
@@ -101,18 +116,23 @@ export class AdminService {
     if (!link) {
       throw new BadRequestException('Activation link not found');
     }
+
     const updatedAdmin = await this.adminRepo.update(
-      { is_active: true },
       { activation_link: link },
-      // { is_active: false },
+      { is_active: true },
     );
-    if (!updatedAdmin[1][0]) {
-      throw new BadRequestException('Admin already activated');
+
+    if (!updatedAdmin.affected) {
+      throw new BadRequestException(
+        'Admin already activated or link is invalid',
+      );
     }
+
     const response = {
       message: 'Admin activated successfully',
-      admin: updatedAdmin[1][0].is_active,
+      admin: { is_active: true },
     };
+
     return response;
   }
 
@@ -204,6 +224,48 @@ export class AdminService {
       tokens,
     };
     return response;
+  }
+
+  // ==================== NEW OTP ===============================
+  async newOtp(phoneAdminDto: PhoneAdminDto) {
+    const phone_number = phoneAdminDto.phone;
+
+    const otp = otpGenerator.generate(4, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false,
+    });
+
+    const resp = await this.smsService.sendSms(phone_number, otp);
+    if (resp.status !== 200) {
+      throw new ServiceUnavailableException('OTP yuborishda xatolik');
+    }
+
+    const message =
+      'Code has been send to ****' +
+      phone_number.slice(phone_number.length - 4);
+
+
+    const now = new Date();
+    const expiration_time = AddMinutesToDate(now, 5);
+    await this.otpRepo.delete({ check: phone_number });
+
+    const newOtp = await this.otpRepo.save({
+      otp_id: v4(),
+      otp,
+      expiration_time,
+      check: phone_number,
+    });
+
+    const details = {
+      timestamp: now,
+      check: phone_number,
+      otp_id: newOtp.otp_id,
+    };
+
+    const encoded = await encode(JSON.stringify(details));
+
+    return { status: 'Success', deatils: encoded, message };
   }
 
   findAll() {

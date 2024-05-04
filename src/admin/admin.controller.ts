@@ -48,16 +48,23 @@ export class AdminController {
   }
 
   // --------------LOGOUT-----------------------
-  // @ApiOperation({ summary: 'LogOut' })
-  // // @ApiTags('LOGOUT')
-  // @HttpCode(200)
-  // @Post('logout')
-  // async logout(
-  //   @CookieGetter('refresh_token') refreshToken: string,
-  //   @Res({ passthrough: true }) res: Response,
-  // ) {
-  //   return this.adminService.logout(refreshToken, res);
-  // }
+  @ApiOperation({ summary: 'LogOut' })
+  @ApiTags('LOGOUT')
+  @HttpCode(200)
+  @Post('logout')
+  async logout(
+    @CookieGetter('refresh_token') refreshToken: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminService.logout(refreshToken, res);
+  }
+
+  // ----------------------ACTIVATE------------------------------------
+  @ApiOperation({ summary: 'Activate' })
+  @Get('activate/:link')
+  async activate(@Param('link') link: string) {
+    return this.adminService.activate(link);
+  }
 
   @ApiOperation({ summary: 'Get all admins' })
   @Get()

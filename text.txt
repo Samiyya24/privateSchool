@@ -1,0 +1,19 @@
+curl --location 'notify.eskiz.uz/api/auth/login' \
+--form 'email="samiyyaazizkhanova904@gmail.com"' \
+--form 'password="gGVkdkSWAqMEcbLjOVDnOnDfwL9IsegIbidkAgFC"'
+
+{
+  "message": "token_generated",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTczODU1NTcsImlhdCI6MTcxNDc5MzU1Nywicm9sZSI6InRlc3QiLCJzaWduIjoiNTEyMjQ3NTJhY2U0MzU3MzViMjA3MGU4OTA0NjFkODMzODdjNWZjODI2NWZiMGYyZTA5ZWNjYWMyOTMwZGJkNCIsInN1YiI6IjY5NzgifQ.riAYBVCXxgd63uy8vu7l4shVd9Ywg7HuFupGRQCBptk"
+  },
+  "token_type": "bearer"
+}
+
+----------------------------------------------------------------------------
+
+curl --location 'notify.eskiz.uz/api/message/sms/send' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTczODU1NTcsImlhdCI6MTcxNDc5MzU1Nywicm9sZSI6InRlc3QiLCJzaWduIjoiNTEyMjQ3NTJhY2U0MzU3MzViMjA3MGU4OTA0NjFkODMzODdjNWZjODI2NWZiMGYyZTA5ZWNjYWMyOTMwZGJkNCIsInN1YiI6IjY5NzgifQ.riAYBVCXxgd63uy8vu7l4shVd9Ywg7HuFupGRQCBptk' \
+--form 'mobile_phone="998907621314"' \
+--form 'message="Your verification code is 1234"
+--form 'from="4546"' \

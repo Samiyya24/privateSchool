@@ -33,6 +33,8 @@ import { FatherModule } from './father/father.module';
 import { Father } from './father/entities/father.entity';
 import { StudentGroupModule } from './student_group/student_group.module';
 import { StudentGroup } from './student_group/entities/student_group.entity';
+import { MailModule } from './mail/mail.module';
+import { SmsModule } from './sms/sms.module';
 
 @Module({
   imports: [
@@ -61,7 +63,8 @@ import { StudentGroup } from './student_group/entities/student_group.entity';
         Payment,
         Mother,
         Father,
-        StudentGroup
+        StudentGroup,
+        
       ],
     }),
     AdminModule,
@@ -80,6 +83,8 @@ import { StudentGroup } from './student_group/entities/student_group.entity';
     MotherModule,
     FatherModule,
     StudentGroupModule,
+    MailModule,
+    SmsModule,
   ],
   controllers: [],
   providers: [],
