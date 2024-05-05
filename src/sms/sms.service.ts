@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { IsMobilePhone } from 'class-validator';
-
 import FormData = require('form-data');
 
 @Injectable()

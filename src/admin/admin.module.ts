@@ -7,10 +7,11 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { MailModule } from '../mail/mail.module';
 import { SmsModule } from '../sms/sms.module';
 import { OtpModule } from '../otp/otp.module';
+import { Otp } from '../otp/entities/otp.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Admin]),
+    TypeOrmModule.forFeature([Admin, Otp]),
     JwtModule.register({}),
     MailModule,
     SmsModule,

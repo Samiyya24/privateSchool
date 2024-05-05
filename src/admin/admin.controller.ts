@@ -17,6 +17,7 @@ import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { LoginAdminDto } from './dto/login-admin.dto';
 import { CookieGetter } from '../decorators/cookie_getter.decorator';
+import { PhoneAdminDto } from './dto/phone-admin.dto';
 
 @ApiHeader({
   name: 'Admin',
@@ -65,6 +66,18 @@ export class AdminController {
   async activate(@Param('link') link: string) {
     return this.adminService.activate(link);
   }
+
+  @HttpCode(200)
+  @Post('new_otp')
+  async newOtp(@Body() phoneAdminDto: PhoneAdminDto) {
+    return this.adminService.newOtp(phoneAdminDto);
+  }
+
+  // @HttpCode(200)
+  // @Post('verify_otp')
+  // async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
+  //   return this.adminService.verifyOtp(verifyOtpDto);
+  // }
 
   @ApiOperation({ summary: 'Get all admins' })
   @Get()

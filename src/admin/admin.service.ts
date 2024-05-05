@@ -16,11 +16,11 @@ import { Response } from 'express';
 import { LoginAdminDto } from './dto/login-admin.dto';
 import { MailService } from '../mail/mail.service';
 import { SmsService } from '../sms/sms.service';
-import { PhoneAdminDto } from './dto/phone-user.dto';
 import * as otpGenerator from 'otp-generator';
 import { Otp } from '../otp/entities/otp.entity';
 import { AddMinutesToDate } from '../helpers/addMinutes';
 import { encode } from '../helpers/crypto';
+import { PhoneAdminDto } from './dto/phone-admin.dto';
 
 
 console.log(v4);
