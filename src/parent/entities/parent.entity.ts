@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Student } from "../../students/entities/student.entity";
 
 @Entity()
-export class Mother {
+export class Parent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,7 +13,7 @@ export class Mother {
   last_name: string;
 
   @Column()
-  phone_number: number;
+  phone_number: string;
 
   @Column()
   profession: string;
@@ -21,6 +21,9 @@ export class Mother {
   @Column()
   pasport_copy: string;
 
-  @OneToMany((type) => Student, (data) => data.mother_id)
+  @Column()
+  gender: string;
+
+  @OneToMany((type) => Student, (data) => data.parent_id)
   student_id: Student;
 }

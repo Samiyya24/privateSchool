@@ -1,10 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateFatherDto } from './create-father.dto';
 
-export class UpdateFatherDto extends PartialType(CreateFatherDto) {
+export class UpdateParentDto {
   first_name?: string;
   last_name?: string;
-  phone_number?: number;
+  phone_number?: string;
   profession?: string;
   pasport_copy?: string;
+  adrress?: string;
+  gender?: string;
 }

@@ -17,7 +17,9 @@ export class DepartmentService {
   }
 
   findAll() {
-    return this.departmentRepo.find();
+    return this.departmentRepo.find({
+      relations: { room_id: { furniture_id: true } },
+    });
   }
 
   findOne(id: number) {

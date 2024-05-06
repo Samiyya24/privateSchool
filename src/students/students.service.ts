@@ -17,7 +17,7 @@ export class StudentsService {
   }
 
   findAll() {
-    return this.studentRepo.find();
+    return this.studentRepo.find({ relations: { payment_id: true, parent_id:true } });
   }
 
   findOne(id: number) {
@@ -30,10 +30,10 @@ export class StudentsService {
   }
 
   async remove(id: number) {
-      const student = await this.studentRepo.findOneBy({ id });
-      if (!student) {
-        throw new BadRequestException('Bunday id lik student mavjud emas');
-      }
+    const student = await this.studentRepo.findOneBy({ id });
+    if (!student) {
+      throw new BadRequestException('Bunday id lik student mavjud emas');
+    }
     await this.studentRepo.delete({ id });
     return id;
   }

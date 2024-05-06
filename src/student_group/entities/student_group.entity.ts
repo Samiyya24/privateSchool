@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Group } from '../../group/entities/group.entity';
 import { Student } from '../../students/entities/student.entity';
 
@@ -7,7 +7,7 @@ export class StudentGroup {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany((type) => Group, (data) => data.studentGroup_id)
+  @ManyToOne((type) => Group, (data) => data.studentGroup_id)
   group_id: Group;
 
   @OneToMany((type) => Student, (data) => data.studentGroup_id)

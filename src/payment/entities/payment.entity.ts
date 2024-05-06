@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Student } from "../../students/entities/student.entity";
 
 @Entity()
@@ -7,10 +7,10 @@ export class Payment {
   id: number;
 
   @Column()
-  payment_last_date: Date;
+  payment_last_date: string;
 
   @Column()
-  payment_date: Date;
+  payment_date: string;
 
   @Column()
   price: number;
@@ -18,6 +18,6 @@ export class Payment {
   @Column()
   is_paid: boolean;
 
-  @ManyToOne((type) => Student, (data) => data.payment_id)
-  student_id: Student;
+  @OneToMany((type) => Student, (data) => data.payment_id)
+  student_id: Student[];
 }

@@ -17,7 +17,12 @@ export class StudentGroupService {
   }
 
   findAll() {
-    return this.studentGroupRepo.find();
+    return this.studentGroupRepo.find({
+      relations: {
+        group_id: { lesson_id: true },
+        // student_id: { payment_id: true },
+      },
+    });
   }
 
   findOne(id: number) {
@@ -30,10 +35,10 @@ export class StudentGroupService {
   }
 
   async remove(id: number) {
-      const studentGroup = await this.studentGroupRepo.findOneBy({ id });
-      if (!studentGroup) {
-        throw new BadRequestException('Bunday id lik studentGroup mavjud emas');
-      }
+    const studentGroup = await this.studentGroupRepo.findOneBy({ id });
+    if (!studentGroup) {
+      throw new BadRequestException('Bunday id lik studentGroup mavjud emas');
+    }
     await this.studentGroupRepo.delete({ id });
     return id;
   }

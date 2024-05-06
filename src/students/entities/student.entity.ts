@@ -1,8 +1,14 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { StudentGroup } from '../../student_group/entities/student_group.entity';
-import { Father } from '../../father/entities/father.entity';
-import { Mother } from '../../mother/entities/mother.entity';
+import { Parent } from '../../parent/entities/parent.entity';
 import { Payment } from '../../payment/entities/payment.entity';
+import { Stuff } from '../../stuff/entities/stuff.entity';
 
 @Entity()
 export class Student {
@@ -16,7 +22,7 @@ export class Student {
   last_name: string;
 
   @Column()
-  date_of_birth: Date;
+  date_of_birth: string;
 
   @Column()
   gender: string;
@@ -25,23 +31,20 @@ export class Student {
   address: string;
 
   @Column()
-  date_of_admission: Date;
+  date_of_admission: string;
 
   @Column()
   photo: string;
 
-  @Column()
-  class_representative: string;
-
   @OneToMany((type) => StudentGroup, (data) => data.student_id)
   studentGroup_id: StudentGroup;
 
-  @ManyToOne((type) => Father, (data) => data.student_id)
-  father_id: Father;
+  @ManyToOne((type) => Parent, (data) => data.student_id)
+  parent_id: Parent;
 
-  @ManyToOne((type) => Mother, (data) => data.student_id)
-  mother_id: Mother;
+  @ManyToOne((type) => Stuff, (data) => data.student_id)
+  class_representative: Stuff;
 
-  @OneToMany((type) => Payment, (data) => data.student_id)
+  @ManyToOne((type) => Payment, (data) => data.student_id)
   payment_id: Payment;
 }

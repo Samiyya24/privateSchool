@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Group } from "../../group/entities/group.entity";
 
 
@@ -16,6 +16,6 @@ export class Lesson {
   @Column()
   end_time: string;
 
-  @ManyToMany((type) => Group, (data) => data.lesson_id)
-  group_id: Group;
+  @OneToMany((type) => Group, (data) => data.lesson_id)
+  group_id: Group[]
 }

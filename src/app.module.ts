@@ -22,15 +22,13 @@ import { GroupStuffModule } from './group-stuff/group-stuff.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { StudentsModule } from './students/students.module';
 import { PaymentModule } from './payment/payment.module';
-import { MotherModule } from './mother/mother.module';
+import { ParentModule } from './parent/parent.module';
 import { Group } from './group/entities/group.entity';
 import { GroupStuff } from './group-stuff/entities/group-stuff.entity';
 import { Lesson } from './lessons/entities/lesson.entity';
 import { Student } from './students/entities/student.entity';
 import { Payment } from './payment/entities/payment.entity';
-import { Mother } from './mother/entities/mother.entity';
-import { FatherModule } from './father/father.module';
-import { Father } from './father/entities/father.entity';
+import { Parent } from './parent/entities/parent.entity';
 import { StudentGroupModule } from './student_group/student_group.module';
 import { StudentGroup } from './student_group/entities/student_group.entity';
 import { MailModule } from './mail/mail.module';
@@ -61,10 +59,8 @@ import { SmsModule } from './sms/sms.module';
         Lesson,
         Student,
         Payment,
-        Mother,
-        Father,
+        Parent,
         StudentGroup,
-        
       ],
     }),
     AdminModule,
@@ -80,8 +76,7 @@ import { SmsModule } from './sms/sms.module';
     LessonsModule,
     StudentsModule,
     PaymentModule,
-    MotherModule,
-    FatherModule,
+    ParentModule,
     StudentGroupModule,
     MailModule,
     SmsModule,

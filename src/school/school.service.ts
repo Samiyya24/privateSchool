@@ -14,7 +14,7 @@ export class SchoolService {
   }
 
   findAll() {
-    return this.schoolRepo.find();
+    return this.schoolRepo.find({relations:{department_id:{room_id:{furniture_id:true}}, stuff_id:{stuffRole_id:true}}});
   }
 
   findOne(id: number) {

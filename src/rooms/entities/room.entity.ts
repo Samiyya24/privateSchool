@@ -16,9 +16,9 @@ export class Room {
   @Column()
   volume: number;
 
-  @ManyToOne((type)=>Department, (data)=> data.room_id)
-  department_id:Department
+  @OneToMany((type) => Department, (data) => data.room_id)
+  department_id: Department[];
 
-  @OneToMany((type)=>Furniture, (data)=>data.room_id)
-  furniture_id : Furniture[]
+  @ManyToOne((type) => Furniture, (data) => data.room_id)
+  furniture_id: Furniture
 }

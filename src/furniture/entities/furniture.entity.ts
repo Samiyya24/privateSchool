@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Room } from '../../rooms/entities/room.entity';
 
 @Entity()
@@ -12,6 +12,6 @@ export class Furniture {
   @Column()
   unique_number: number;
   
-  @ManyToOne((type)=>Room, (data)=>data.furniture_id)
-  room_id: Room;
+  @OneToMany((type)=>Room, (data)=>data.furniture_id)
+  room_id: Room[]
 }

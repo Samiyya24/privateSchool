@@ -17,7 +17,7 @@ export class StuffRoleService {
   }
 
   findAll() {
-    return this.stuffRoleRepo.find();
+    return this.stuffRoleRepo.find({relations:{role_id:true}});
   }
  
   findOne(id: number) {

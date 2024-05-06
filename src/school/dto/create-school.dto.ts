@@ -1,6 +1,6 @@
 export class CreateSchoolDto {
   school_name: string;
-  since: Date;
+  since: string;
   address: string;
   description: string;
   school_area: number;

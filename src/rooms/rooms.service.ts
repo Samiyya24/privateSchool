@@ -17,7 +17,7 @@ export class RoomsService {
   }
 
   findAll() {
-    return this.roomRepo.find();
+    return this.roomRepo.find({ relations: { furniture_id: true } });
   }
 
   findOne(id: number) {

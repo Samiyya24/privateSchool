@@ -14,15 +14,12 @@ export class Group {
   @Column()
   students_count: number;
 
-  @Column()
-  stuff_id: number;
-
-  @OneToMany((type) => GroupStuff, (data) => data.group_id)
+  @ManyToOne((type) => GroupStuff, (data) => data.group_id)
   groupStuff_id: GroupStuff;
 
-  @OneToMany((type) => Lesson, (data) => data.group_id)
+  @ManyToOne((type) => Lesson, (data) => data.group_id)
   lesson_id: Lesson;
 
-  @ManyToOne((type) => StudentGroup, (data) => data.group_id)
-  studentGroup_id: StudentGroup;
+  @OneToMany((type) => StudentGroup, (data) => data.group_id)
+  studentGroup_id: StudentGroup[]
 }

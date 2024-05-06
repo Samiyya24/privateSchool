@@ -17,7 +17,12 @@ export class StuffService {
   }
 
   findAll() {
-    return this.stuffRepo.find();
+    return this.stuffRepo.find({
+      relations: {
+        stuffRole_id: { role_id: true },
+        groupStuff_id: { group_id: true },
+      },
+    });
   }
 
   findOne(id: number) {
