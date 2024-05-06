@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
-import { MailService } from './mail.service';
-import { ConfigService } from '@nestjs/config';
-import { join } from 'path';
-
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigModule, ConfigService } from '@nestjs/config'; // Import ConfigModule and ConfigService
+import { resolve } from 'path';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { AdminMailService } from './AdminMail.service';
 
 @Module({
   imports: [
+    ConfigModule, // Import ConfigModule to use ConfigService
     MailerModule.forRootAsync({
+      imports: [ConfigModule], // Import ConfigModule here as well
       useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get<string>('MAILER_HOST'),
@@ -19,13 +20,13 @@ import { MailerModule } from '@nestjs-modules/mailer';
           },
         },
         defaults: {
-          from: `"Private School" <${config.get('MAILER_HOST')}>`,
+          from: `"Exam" <${config.get('MAILER_HOST')}>`,
         },
         template: {
-          dir: join(__dirname, 'templates'),
+          dir: resolve(__dirname, 'templates'),
           adapter: new HandlebarsAdapter(),
           template: 'confirmation',
-          options: {
+          options: { 
             strict: true,
           },
         },
@@ -33,7 +34,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       inject: [ConfigService],
     }),
   ],
-  providers: [MailService],
-  exports: [MailService],
+  providers: [AdminMailService],
+  exports: [AdminMailService],
 })
 export class MailModule {}

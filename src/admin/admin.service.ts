@@ -14,14 +14,13 @@ import * as bcrypt from 'bcrypt';
 import { v4 } from 'uuid';
 import { Response } from 'express';
 import { LoginAdminDto } from './dto/login-admin.dto';
-import { MailService } from '../mail/mail.service';
+import { AdminMailService } from '../mail/AdminMail.service';
 import { SmsService } from '../sms/sms.service';
 import * as otpGenerator from 'otp-generator';
 import { Otp } from '../otp/entities/otp.entity';
 import { AddMinutesToDate } from '../helpers/addMinutes';
 import { encode } from '../helpers/crypto';
 import { PhoneAdminDto } from './dto/phone-admin.dto';
-
 
 console.log(v4);
 
@@ -32,7 +31,7 @@ export class AdminService {
     @InjectRepository(Otp) private readonly otpRepo: Repository<Otp>,
 
     private readonly jwtService: JwtService,
-    private readonly mailService: MailService,
+    private readonly mailService: AdminMailService,
     private readonly smsService: SmsService,
   ) {}
 
@@ -61,8 +60,8 @@ export class AdminService {
   // =========== SIGN UP ===============================
 
   async signUp(createAdminDto: CreateAdminDto, res: Response) {
-    const admin = await this.adminRepo.findOne({
-      where: { email: createAdminDto.email },
+    const admin = await this.adminRepo.findOneBy({
+      email: createAdminDto.email,
     });
     if (admin) {
       throw new BadRequestException('Bunday foydalanuvchi mavjud');
@@ -79,6 +78,7 @@ export class AdminService {
     const hashed_refresh_token = await bcrypt.hash(tokens.refreshToken, 7);
     const activation_link = v4();
     const is_active = await newAdmin.is_active;
+
     const updatedAdmin = await this.adminRepo.save({
       id: newAdmin.id,
       hashed_refresh_token,
@@ -86,7 +86,6 @@ export class AdminService {
       hashed_password,
       is_active,
     });
-    console.log(updatedAdmin);
 
     res.cookie('refresh_token', tokens.refreshToken, {
       maxAge: 15 * 24 * 60 * 60 * 1000,
@@ -95,10 +94,13 @@ export class AdminService {
 
     const updateAdmin = updatedAdmin;
 
-    console.log(updatedAdmin);
+    const data = await this.adminRepo.findOneBy({id:updateAdmin.id});
+
+    console.log(data);
+    
 
     try {
-      await this.mailService.sendMail(updateAdmin);
+    await this.mailService.sendMail(data);
     } catch (error) {
       throw new BadRequestException('Xatni yuborishda xatolik');
     }
@@ -153,9 +155,16 @@ export class AdminService {
 
     const tokens = await this.getTokens(admin);
     const hashed_refresh_token = await bcrypt.hash(tokens.refreshToken, 7);
+    const is_active = await admin.is_active;
+    const hashed_password = await bcrypt.hash(loginAdminDto.password, 7);
+    const activation_link = v4();
+
     const updatedAdmin = await this.adminRepo.save({
       id: admin.id,
       hashed_refresh_token,
+      is_active,
+      hashed_password,
+      activation_link,
     });
     res.cookie('refresh_token', tokens.refreshToken, {
       maxAge: 15 * 24 * 60 * 60 * 1000,
@@ -163,7 +172,7 @@ export class AdminService {
     });
     const response = {
       message: 'Admin logged in',
-      admin: updatedAdmin[1][0],
+      admin: updatedAdmin,
       tokens,
     };
     return response;
@@ -244,7 +253,6 @@ export class AdminService {
     const message =
       'Code has been send to ****' +
       phone_number.slice(phone_number.length - 4);
-
 
     const now = new Date();
     const expiration_time = AddMinutesToDate(now, 5);

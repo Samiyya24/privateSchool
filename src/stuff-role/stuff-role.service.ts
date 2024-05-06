@@ -11,7 +11,7 @@ export class StuffRoleService {
     @InjectRepository(StuffRole)
     private stuffRoleRepo: Repository<StuffRole>,
   ) {}
-
+ 
   create(createStuffRoleDto: CreateStuffRoleDto) {
     return this.stuffRoleRepo.save(createStuffRoleDto);
   }
@@ -19,7 +19,7 @@ export class StuffRoleService {
   findAll() {
     return this.stuffRoleRepo.find();
   }
-
+ 
   findOne(id: number) {
     return this.stuffRoleRepo.findOneBy({ id });
   }

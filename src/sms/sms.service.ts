@@ -22,6 +22,7 @@ export class SmsService {
     };
     try {
       const resp = await axios(config);
+      return resp
     } catch (error) {
       console.log(error);
       return { status: 500 };
