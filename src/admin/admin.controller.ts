@@ -16,7 +16,7 @@ import { UpdateAdminDto } from './dto/update-admin.dto';
 import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { LoginAdminDto } from './dto/login-admin.dto';
-import { CookieGetter } from '../decorators/cookie_getter.decorator';
+import { CookieGetter } from '../common/decorators/cookie_getter.decorator';
 import { PhoneAdminDto } from './dto/phone-admin.dto';
 
 @ApiHeader({

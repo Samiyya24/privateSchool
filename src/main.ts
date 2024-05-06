@@ -2,13 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { loggerFactory } from './common/logger/logger-factory';
 
 const start = async () => {
   const PORT = process.env.PORT;
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: loggerFactory('PrivateSchool'),
+  });
   app.setGlobalPrefix('api');
   app.use(cookieParser());
-
 
   // ===================== SWAGGER ==========
   const config = new DocumentBuilder()

@@ -39,7 +39,7 @@ export class AdminGuard implements CanActivate {
       }
 
       if (!admin.is_active) {
-        throw new BadRequestException('User is not active');
+        throw new BadRequestException('Admin is not active');
       }
 
       req.user = admin;

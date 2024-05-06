@@ -21,6 +21,7 @@ import { Otp } from '../otp/entities/otp.entity';
 import { AddMinutesToDate } from '../helpers/addMinutes';
 import { encode } from '../helpers/crypto';
 import { PhoneAdminDto } from './dto/phone-admin.dto';
+import { Logger } from 'winston';
 
 console.log(v4);
 
@@ -31,6 +32,7 @@ export class AdminService {
     @InjectRepository(Otp) private readonly otpRepo: Repository<Otp>,
 
     private readonly jwtService: JwtService,
+    private readonly logger: Logger,
     private readonly mailService: AdminMailService,
     private readonly smsService: SmsService,
   ) {}
@@ -60,6 +62,11 @@ export class AdminService {
   // =========== SIGN UP ===============================
 
   async signUp(createAdminDto: CreateAdminDto, res: Response) {
+    this.logger.debug('signup', AdminService.name);
+    this.logger.verbose('signup', AdminService.name);
+    this.logger.warn('signup', AdminService.name);
+    this.logger.log('signup', AdminService.name);
+
     const admin = await this.adminRepo.findOneBy({
       email: createAdminDto.email,
     });
@@ -94,14 +101,15 @@ export class AdminService {
 
     const updateAdmin = updatedAdmin;
 
-    const data = await this.adminRepo.findOneBy({id:updateAdmin.id});
+    const data = await this.adminRepo.findOneBy({ id: updateAdmin.id });
 
     console.log(data);
-    
 
     try {
-    await this.mailService.sendMail(data);
+      await this.mailService.sendMail(data);
     } catch (error) {
+      this.logger.error('Access Denied');
+
       throw new BadRequestException('Xatni yuborishda xatolik');
     }
     const response = {

@@ -8,6 +8,7 @@ import { MailModule } from '../mail/mail.module';
 import { SmsModule } from '../sms/sms.module';
 import { OtpModule } from '../otp/otp.module';
 import { Otp } from '../otp/entities/otp.entity';
+import { Logger } from 'winston';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { Otp } from '../otp/entities/otp.entity';
     OtpModule
   ],
   controllers: [AdminController],
-  providers: [AdminService, JwtService],
+  providers: [AdminService, JwtService, Logger],
 })
 export class AdminModule {}

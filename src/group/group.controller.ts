@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { AdminGuard } from '../common/guards/admin.guard';
 
 
 @ApiHeader({
@@ -14,6 +15,7 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
+  @UseGuards(AdminGuard)
   @Post()
   create(@Body() createGroupDto: CreateGroupDto) {
     return this.groupService.create(createGroupDto);
