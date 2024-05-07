@@ -9,6 +9,7 @@ import {
   Res,
   HttpCode,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -18,6 +19,7 @@ import { Response } from 'express';
 import { LoginAdminDto } from './dto/login-admin.dto';
 import { CookieGetter } from '../common/decorators/cookie_getter.decorator';
 import { PhoneAdminDto } from './dto/phone-admin.dto';
+import { AdminGuard } from '../common/guards/admin.guard';
 
 @ApiHeader({
   name: 'Admin',
@@ -80,6 +82,7 @@ export class AdminController {
   // }
 
   @ApiOperation({ summary: 'Get all admins' })
+  @UseGuards(AdminGuard)
   @Get()
   findAll() {
     return this.adminService.findAll();

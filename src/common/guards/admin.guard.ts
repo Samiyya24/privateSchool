@@ -37,6 +37,8 @@ export class AdminGuard implements CanActivate {
           throw new BadRequestException(error.message);
         }
       }
+      console.log(admin, "admin ");
+      
 
       if (!admin.is_active) {
         throw new BadRequestException('Admin is not active');

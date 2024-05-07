@@ -60,7 +60,7 @@ export class Admin {
     example: false,
     description: 'Checked user is activated',
   })
-  @Column({ nullable: true })
+  @Column({ nullable: true, default:false })
   is_active: boolean;
 
   @Column({ nullable: true })

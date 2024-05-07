@@ -62,10 +62,11 @@ export class AdminService {
   // =========== SIGN UP ===============================
 
   async signUp(createAdminDto: CreateAdminDto, res: Response) {
-    this.logger.debug('signup', AdminService.name);
-    this.logger.verbose('signup', AdminService.name);
-    this.logger.warn('signup', AdminService.name);
-    this.logger.log('signup', AdminService.name);
+
+    // this.logger.debug('signup', AdminService.name);
+    // this.logger.verbose('signup', AdminService.name);
+    // this.logger.warn('signup', AdminService.name);
+    // this.logger.log('signup', AdminService.name);
 
     const admin = await this.adminRepo.findOneBy({
       email: createAdminDto.email,
@@ -109,7 +110,6 @@ export class AdminService {
       await this.mailService.sendMail(data);
     } catch (error) {
       this.logger.error('Access Denied');
-
       throw new BadRequestException('Xatni yuborishda xatolik');
     }
     const response = {

@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { loggerFactory } from './common/logger/logger-factory';
+import { DatabaseExceptionFilter } from './errorHandling/errorHandling';
 
 const start = async () => {
   const PORT = process.env.PORT;
@@ -11,6 +12,7 @@ const start = async () => {
   });
   app.setGlobalPrefix('api');
   app.use(cookieParser());
+  app.useGlobalFilters(new DatabaseExceptionFilter());
 
   // ===================== SWAGGER ==========
   const config = new DocumentBuilder()
