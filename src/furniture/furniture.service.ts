@@ -17,7 +17,11 @@ export class FurnitureService {
   }
 
   findAll() {
-    return this.furnitureRepo.find();
+    return this.furnitureRepo.find({
+      relations:{
+        room_id:true
+      }
+    });
   }
 
   findOne(id: number) {
