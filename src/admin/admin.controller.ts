@@ -82,7 +82,7 @@ export class AdminController {
   // }
 
   @ApiOperation({ summary: 'Get all admins' })
-  @UseGuards(AdminGuard)
+  // @UseGuards(AdminGuard)
   @Get()
   findAll() {
     return this.adminService.findAll();

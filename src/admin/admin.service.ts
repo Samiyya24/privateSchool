@@ -43,6 +43,7 @@ export class AdminService {
       id: admin.id,
       is_active: admin.is_active,
     };
+
     const [accsessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: process.env.ACCESS_TOKEN_KEY,
@@ -62,7 +63,6 @@ export class AdminService {
   // =========== SIGN UP ===============================
 
   async signUp(createAdminDto: CreateAdminDto, res: Response) {
-
     // this.logger.debug('signup', AdminService.name);
     // this.logger.verbose('signup', AdminService.name);
     // this.logger.warn('signup', AdminService.name);
@@ -149,22 +149,30 @@ export class AdminService {
   // =========== 'SIGNIN' ===============================
   async signIn(loginAdminDto: LoginAdminDto, res: Response) {
     const { email, password } = loginAdminDto;
+
     const admin = await this.adminRepo.findOne({ where: { email } });
+    console.log(admin, 'admin');
+
     if (!admin) {
       throw new BadRequestException('Admin not found');
     }
     if (!admin.is_active) {
       throw new BadRequestException('Admin  is not activate');
     }
+
     const isMatchPass = await bcrypt.compare(password, admin.hashed_password);
     if (!isMatchPass) {
       throw new BadRequestException('Password do not match');
     }
 
     const tokens = await this.getTokens(admin);
+    console.log(tokens, 'token');
+
     const hashed_refresh_token = await bcrypt.hash(tokens.refreshToken, 7);
     const is_active = await admin.is_active;
     const hashed_password = await bcrypt.hash(loginAdminDto.password, 7);
+    console.log(hashed_password, 'hashed_password');
+
     const activation_link = v4();
 
     const updatedAdmin = await this.adminRepo.save({
@@ -189,9 +197,14 @@ export class AdminService {
   // =========== LOGOUT ===============================
 
   async logout(refreshToken: string, res: Response) {
+    console.log(refreshToken, 'token');
+
     const adminDate = await this.jwtService.verify(refreshToken, {
       secret: process.env.REFRESH_TOKEN_KEY,
     });
+
+    console.log(adminDate, 'adminDate');
+
     if (!adminDate) {
       throw new ForbiddenException('Admin not verified');
     }
@@ -202,7 +215,7 @@ export class AdminService {
     res.clearCookie('refresh_token');
     const response = {
       message: 'Admin logged out successfully',
-      admin_refresh_token: updatedAdmin[1][0].hashed_refresh_token,
+      admin_refresh_token: updatedAdmin[0].hashed_refresh_token,
     };
     return response;
   }
